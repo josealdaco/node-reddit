@@ -29,10 +29,6 @@ app.get('/', (req, res) => {
     res.redirect('/posts/index')
 })
 
-app.get('/posts/new', (req, res) => {
-    console.log("Rendering")
-    res.render('posts-new')
-})
 
 
 
@@ -40,4 +36,5 @@ app.get('/posts/new', (req, res) => {
 app.listen(3000, () => {
   console.log('Reddit Listening on event');
 });
+
 module.exports = app;

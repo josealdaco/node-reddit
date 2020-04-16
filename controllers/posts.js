@@ -19,9 +19,8 @@ module.exports = (app) => {
 
         app.get("/posts/:id", function(req, res) {
           // LOOK UP THE POST
-          Post.findById(req.params.id)
+          Post.findById(req.params.id).lean() // must have lean
             .then(post => {
-                console.log("POST ID",  post)
               res.render("posts-show", { post });
             })
             .catch(err => {
