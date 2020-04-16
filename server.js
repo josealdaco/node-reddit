@@ -24,7 +24,7 @@ app.set('view engine', 'handlebars');
 // setDB
 require('./data/reddit-db');
 require('./controllers/posts.js')(app);
-
+require('./controllers/comments.js')(app);
 app.get('/', (req, res) => {
     res.redirect('/posts/index')
 })
