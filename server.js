@@ -45,17 +45,9 @@ var checkAuth = (req, res, next) => {
 app.use(checkAuth);
 
 
-app.get("/", (req, res) => {
-  var currentUser = req.user;
-
-  Post.find({})
-    .then(posts => {
-      res.render("posts-index", { posts, currentUser });
-    })
-    .catch(err => {
-      console.log(err.message);
-    });
-});
+app.get('/', (req, res) => {
+    res.redirect('/posts/index')
+})
 
 
 
