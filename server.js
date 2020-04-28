@@ -16,20 +16,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Add after body parser initialization!
-
-
-
-// Middleware
-app.use(expressValidator());
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-
-// setDB
-require('./data/reddit-db');
-require('./controllers/posts.js')(app);
-require('./controllers/comments.js')(app);
-require('./controllers/auth.js')(app);
-
 var checkAuth = (req, res, next) => {
   console.log("Checking authentication");
   if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
@@ -43,6 +29,20 @@ var checkAuth = (req, res, next) => {
   next();
 };
 app.use(checkAuth);
+
+
+// Middleware
+app.use(expressValidator());
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// setDB
+require('./data/reddit-db');
+require('./controllers/posts.js')(app);
+require('./controllers/comments.js')(app);
+require('./controllers/auth.js')(app);
+
+
 
 
 app.get('/', (req, res) => {

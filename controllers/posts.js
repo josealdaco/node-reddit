@@ -2,12 +2,19 @@ const Post = require('../models/post');
 const User = require('../models/user');
 
 module.exports = (app) => {
+    app.get('/posts/new', (req, res) => {
+        var currentUser = req.user;
+
+        console.log("Rendering")
+        res.render('posts-new')
+    })
     // INDEX
     app.get('/', (req, res) => {
         var currentUser = req.user;
+        console.log("User", currentUser)
         // res.render('home', {});
         console.log(req.cookies);
-        Post.find().populate('author')
+        Post.find().populate('author').lean()
         .then(posts => {
             res.render('posts-index', { posts, currentUser });
             // res.render('home', {});
@@ -18,18 +25,15 @@ module.exports = (app) => {
 
 
     app.get('/posts/index', (req, res) => {
+        var currentUser = req.user;
         console.log("Even triggered")
             Post.find({}).lean()
                 .then(posts => {
-                    res.render('posts-index', { posts })
+                    res.render('posts-index', { posts , currentUser})
                 })
                 .catch(err => {
                     console.log(err.message);
                 })
-        })
-        app.get('/posts/new', (req, res) => {
-            console.log("Rendering")
-            res.render('posts-new')
         })
 
         // SHOW
@@ -37,7 +41,7 @@ module.exports = (app) => {
        var currentUser = req.user;
        // LOOK UP THE POST
 
-       Post.findById(req.params.id).populate({path:'comments', populate: {path: 'author'}}).populate('author')
+       Post.findById(req.params.id).populate({path:'comments', populate: {path: 'author'}}).populate('author').lean()
            .then(post => {
                res.render("posts-show", { post, currentUser });
            })
@@ -45,7 +49,6 @@ module.exports = (app) => {
                console.log(err.message);
            });
     });
-
     // SUBREDDIT
 app.get("/n/:subreddit", function (req, res) {
     var currentUser = req.user;
@@ -59,29 +62,29 @@ app.get("/n/:subreddit", function (req, res) {
 });
 
 
-   // CREATE
-     app.post("/posts/new", (req, res) => {
-         if (req.user) {
-             var post = new Post(req.body);
-             post.author = req.user._id;
+// CREATE
+    app.post("/posts/new", (req, res) => {
+        if (req.user) {
+            var post = new Post(req.body);
+            post.author = req.user._id;
 
-             post
-                 .save()
-                 .then(post => {
-                     return User.findById(req.user._id);
-                 })
-                 .then(user => {
-                     user.posts.unshift(post);
-                     user.save();
-                     // REDIRECT TO THE NEW POST
-                     res.redirect(`/posts/${post._id}`);
-                 })
-                 .catch(err => {
-                     console.log(err.message);
-                 });
-         } else {
-             return res.status(401); // UNAUTHORIZED
-         }
-     });
+            post
+                .save()
+                .then(post => {
+                    return User.findById(req.user._id);
+                })
+                .then(user => {
+                    user.posts.unshift(post);
+                    user.save();
+                    // REDIRECT TO THE NEW POST
+                    res.redirect(`/posts/${post._id}`);
+                })
+                .catch(err => {
+                    console.log(err.message);
+                });
+        } else {
+            return res.status(401); // UNAUTHORIZED
+        }
+    });
 
 };
