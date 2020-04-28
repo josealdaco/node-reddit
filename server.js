@@ -1,11 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const exphbs = require('express-handlebars');
 
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 
-
+var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const app = express();
+app.use(cookieParser()); // Add this after you initialize express.
 
 
 // Use Body Parser
@@ -25,6 +28,8 @@ app.set('view engine', 'handlebars');
 require('./data/reddit-db');
 require('./controllers/posts.js')(app);
 require('./controllers/comments.js')(app);
+require('./controllers/auth.js')(app);
+
 app.get('/', (req, res) => {
     res.redirect('/posts/index')
 })
