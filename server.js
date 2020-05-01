@@ -29,6 +29,7 @@ var checkAuth = (req, res, next) => {
   next();
 };
 app.use(checkAuth);
+app.use(express.static('public'));
 
 
 // Middleware
@@ -41,6 +42,7 @@ require('./data/reddit-db');
 require('./controllers/posts.js')(app);
 require('./controllers/comments.js')(app);
 require('./controllers/auth.js')(app);
+require('./controllers/replies.js')(app);
 
 
 
